@@ -40,3 +40,15 @@ VALUES ('ADR9002', '199/11 Nguyen Phuoc Nguyen', 'Da Nang', 'Viet Nam');
 
 INSERT INTO address
 VALUES ('ADR9999', '47 Ham Nghi', 'Richmond', 'Virginia', 'United States');
+
+SELECT * FROM address WHERE address_id = 'ADR9999';
+
+UPDATE address
+SET country = 'Viet Nam'
+WHERE address_id = 'ADR9999';
+
+UPDATE address
+SET country = 'Viet Nam', state = null
+WHERE address_id = 'ADR9999';
+
+DELETE FROM address WHERE address_id = 'ADR9999';
