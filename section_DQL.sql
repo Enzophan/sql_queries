@@ -6,6 +6,7 @@ select * from SUBJECTS
 select * from CLASSES
 select * from STUDENTS
 select * from PARENTS
+SELECT * FROM ADDRESS;
 select * from STUDENT_CLASSES
 select * from STUDENT_PARENT
 
@@ -130,3 +131,46 @@ SELECT STF.STAFF_TYPE,
 	STF.JOIN_DATE
 	FROM STAFF STF
 	WHERE STF.STAFF_TYPE = 'Non-Teaching'
+
+
+-- Group by statement 
+-- Count no of students in each class
+SELECT SC.CLASS_ID , COUNT(1) AS "no_of_students"
+	FROM STUDENT_CLASSES SC
+	GROUP BY SC.CLASS_ID
+	ORDER BY SC.CLASS_ID
+	
+-- More than 100 students in each class
+SELECT SC.CLASS_ID , COUNT(1) AS "no_of_students"
+	FROM STUDENT_CLASSES SC
+	GROUP BY SC.CLASS_ID
+	HAVING COUNT(1) > 100
+	ORDER BY SC.CLASS_ID
+
+-- Parents with more than 1 kid in school
+SELECT SP.PARENT_ID, COUNT(1) AS "no_of_kids"
+	FROM STUDENT_PARENT SP
+	GROUP BY SP.PARENT_ID
+	HAVING COUNT(1) > 1
+	ORDER BY SP.PARENT_ID
+
+
+-- SUBQUERY: query written inside a query
+-- Fetch details of parents having more than 1 kids going to this school
+
+SELECT (P.FIRST_NAME || ' ' || P.LAST_NAME) AS PARENT_NAME,
+	(S.FIRST_NAME || ' ' || S.LAST_NAME) AS STUDENT_NAME,
+	S.AGE AS STUDENT_AGE,
+	S.GENDER AS STUDENT_GENDER,
+	(ADR.STREET || ' ' || ADR.CITY || ' ' || ADR.STATE || ' ' || ADR.COUNTRY) AS ADDRESS
+	FROM PARENTS P
+	JOIN STUDENT_PARENT SP ON P.ID = SP.PARENT_ID
+	JOIN STUDENTS S ON S.ID = SP.STUDENT_ID
+	JOIN ADDRESS ADR ON ADR.ADDRESS_ID = P.ADDRESS_ID
+	WHERE P.ID IN (
+		SELECT SP.PARENT_ID
+			FROM STUDENT_PARENT SP
+			GROUP BY SP.PARENT_ID
+			HAVING COUNT(1) > 1 
+		)
+	ORDER BY 1;
